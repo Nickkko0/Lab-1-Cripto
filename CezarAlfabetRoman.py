@@ -1,0 +1,93 @@
+alfabetMAJ = "AĂÂBCDEFGHIÎJKLMNOPQRSȘTȚUVWXYZ"
+alfabetMIN = "aăâbcdefghiîjklmnopqrsștțuvwxyz"
+n = 31
+
+# "normalizarea" textului dat
+def clean(text):
+    output = ""
+    for caracter in text:
+        if caracter == " ":
+            continue
+        if caracter in alfabetMAJ:
+            output = output + caracter
+        elif caracter in alfabetMIN:
+            i = alfabetMIN.index(caracter)
+            output = output + alfabetMAJ[i]
+        else:
+            return None
+    return output
+
+def make_alphabet(key2):
+    alfabet_cheie = ""
+    for caracter in key2:
+        if caracter not in alfabet_cheie:
+            alfabet_cheie = alfabet_cheie + caracter
+    for caracter in alfabetMAJ:
+        if caracter not in alfabet_cheie:
+            alfabet_cheie = alfabet_cheie + caracter
+    return alfabet_cheie
+
+def caesar(text, key, alfabet, operatie):
+    rezultat = ""
+    for caracter in text:
+        x = alfabet.index(caracter)
+        if operatie == 1:
+            y = (x + key) % n
+        else:
+            y = (x - key) % n
+        rezultat = rezultat + alfabet[y]
+    return rezultat
+
+# functia principala in sine
+while True:
+    print("Selectati o optiune:")
+    print("1. Cifru cezar cu 1 cheie")
+    print("2. Cifru cezar cu 2 chei")
+    print("0. End")
+    option = input()
+
+    if option == "0":
+        break
+    if option != "1" and option != "2":
+        print("Choose 0, 1 or 2")
+        continue
+
+    operatie = input("1 - criptare, 2 - decriptare: ")
+    while operatie != "1" and operatie != "2":
+        print("Type 1 or 2")
+        operatie = input("1 - criptare, 2 - decriptare: ")
+    operatie = int(operatie)
+
+# se face de fiecare data, deoarece ambele optiuni includ criptarea cu cheie numerica
+    while True:
+        key1 = input("Cheia 1 (numar de la 1 la 30): ")
+        if key1.isdigit() and 1 <= int(key1) <= 30:
+            key1 = int(key1)
+            break
+        print("Cheia trebuie sa fie un numar intre 1 si 30")
+    alfabet = alfabetMAJ
+
+# se face doar cand este si o a doua cheie, adica sa selectat optiunea 2
+    if option == "2":
+        while True:
+            key2 = input("Cheia 2 (minim 7 litere): ")
+            if " " in key2 or clean(key2) is None or len(key2) < 7:
+                print("Cheia trebuie sa includa doar litere, fara spatii, si cu o lungime minim de 7 caractere")
+            else:
+                key2 = clean(key2)
+                break
+        alfabet = make_alphabet(key2)
+        print("Alfabet rezultat:", alfabet)
+
+    while True:
+        text = clean(input("Text: "))
+        if text is None or text == "":
+            print("Text invalid, folositi doar litere ale alfabetului român (A-Z)")
+        else:
+            break
+
+    rezultat = caesar(text, key1, alfabet, operatie)
+    if operatie == 1:
+        print("Mesaj criptat:", rezultat)
+    else:
+        print("Mesaj decriptat:", rezultat)
